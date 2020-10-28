@@ -200,9 +200,9 @@ export class SearchableDropdown extends LitElement {
       const index = this.options.indexOf(option);
       const el = this.shadowRoot.querySelector(`.option${index}`);
 
-      if (option.toLowerCase().includes(this.filter.toLowerCase())) {
+      if (option.toLowerCase().includes(this.filter.toLowerCase()))
         el.style.display = '';
-      } else el.style.display = 'none';
+      else el.style.display = 'none';
     });
   }
 
@@ -218,7 +218,7 @@ export class SearchableDropdown extends LitElement {
     }
 
     btn.classList.remove('rotate');
-    this.filterOptions();
+    //
   }
 
   inputFocus() {
