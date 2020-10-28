@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>&lt;my-element> Demo</title>
+    <script type="module" src="../searchable-dropdown.js"></script>
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+        display: flex;
+        justify-content: center;
+        margin-top: 30px;
+        
+      }
+     
+    </style>
+  </head>
+  <body>
+
+    <searchable-dropdown name="Julia" options="" placeholder="Select dog breed"  > </searchable-dropdown>
+
+    <script>
+      const url = 'https://dog.ceo/api/breeds/list/all';
+      let listOfDogs = '';
+      const dropdown = document.querySelector('searchable-dropdown');
+
+      async function getData() {
+        const data = await fetch(url)
+          .then(response => response.json())
+          .then(data => {
+            return Object.keys(data.message);
+          });
+
+        console.log(data);
+        listOfDogs = JSON.stringify(data);
+        dropdown.setAttribute('options', listOfDogs);
+      }
+
+      getData();
+
+      dropdown.addEventListener('selected', e => console.log(e.detail));
+    </script>
+  </body>
+</html>
