@@ -14,12 +14,22 @@
         margin-top: 30px;
         
       }
+
+      :root {
+         --animation-time: .3s;
+        --border: solid 1px var(--primary-color);
+        --active: LightBlue;
+        --background: white;
+        --primary-color: Gainsboro;
+        --text-color: DarkSlateGrey;
+        --size: 10;
+      }
      
     </style>
   </head>
   <body>
 
-    <searchable-dropdown name="Julia" options="" placeholder="Select dog breed"  > </searchable-dropdown>
+    <searchable-dropdown options="" placeholder="Select dog breed" label="Dog breed" > </searchable-dropdown>
 
     <script>
       const url = 'https://dog.ceo/api/breeds/list/all';
@@ -33,7 +43,7 @@
             return Object.keys(data.message);
           });
 
-        console.log(data);
+        
         listOfDogs = JSON.stringify(data);
         dropdown.setAttribute('options', listOfDogs);
       }

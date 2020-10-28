@@ -1,16 +1,26 @@
-import { LitElement, html, css } from 'lit-element';
+import { LitElement, html, css, unsafeCSS } from 'lit-element';
 
 export class SearchableDropdown extends LitElement {
   static get styles() {
     return css`
       :host {
-        display: block;
+        display: flex;
+        flex-direction: column;
+        justify-items: center;
+        align-content: center;
         position: relative;
-        font-family: inherit;
-        --animation-time: .3s;
-        --border: solid 1px Gainsboro;
-        --active: LightBlue;
-        
+        font-family: inherit;   
+      }
+
+      .label {
+        background: var(--background, white);
+        color: var(--primary-color, black);
+        position:absolute;
+        top: 0;
+        transform: translateY(-50%);
+        left: 1em;
+        padding: 0 .8em;
+        font-size: .8em;
       }
 
       .input-btn {
@@ -22,9 +32,8 @@ export class SearchableDropdown extends LitElement {
         right: 1em; 
         width: 10px;
         height: 10px;
-        color: Gainsboro;
-        transition: transform var(--animation-time) ease .1s;
-        
+        color: var(--primary-color, grey);
+        transition: transform var(--animation-time, .3s) ease .1s;
       }
 
       .rotate {
@@ -34,38 +43,34 @@ export class SearchableDropdown extends LitElement {
       input {
         padding: 1em;
         font-size: 1rem;
-        border: var(--border);
+        border: var(--border, solid 1px grey);
         background: inherit;
-        
+        color: var(--text-color, black)
       }
 
-     
-
       input:focus {
-        outline: none;
-        
-        
+        outline: 2px solid var(--active, pink);
       }
 
       input:disabled {
-        background: Gainsboro;
+        background: var(--primary-color, black);
         cursor: not-allowed;
-        
       }
 
       .options_container {
         position: absolute;
+        top: 110%;
         width: 100%;
         display: flex;
         flex-direction: column;
         list-style: none;
-        max-height: 200px;
+        max-height: calc(2rem*var(--size, 5));
         overflow-y: scroll;
         transform: scaleY(0);
         transform-origin: 100% 0%;
-        transition: all var(--animation-time) ease .1s;
-        border: var(--border);
-        margin-top: .2em;
+        transition: all var(--animation-time, .3s) ease .1s;
+        border: var(--border, solid 1px grey);
+        color: var(--text-color, black)
         
       }
 
@@ -76,12 +81,13 @@ export class SearchableDropdown extends LitElement {
 
       .option {
         padding: .5em 1em;
-        transition: background var(--animation-time) ease .1s;
+        transition: all var(--animation-time, .3s) ease .1s;
         cursor: pointer;
       }
 
       .option:hover {
-        background: var(--active);
+        background: var(--active, pink);
+        color: var(--text-color, black);
       }
 
       ul {
@@ -92,8 +98,6 @@ export class SearchableDropdown extends LitElement {
         padding-inline-start: 0px;
         }
 
-
-
     `;
   }
 
@@ -101,13 +105,17 @@ export class SearchableDropdown extends LitElement {
     return {
       options: { type: Array },
 
-      filter: { type: String },
+      filter: { attribute: false},
 
-      selected: { type: String },
+      selected: { type: String, reflect: true},
 
       placeholder: { type: String },
 
       disabled: { type: Boolean },
+
+      label: { type: String },
+
+      size: { type: Number },
     };
   }
 
@@ -118,6 +126,7 @@ export class SearchableDropdown extends LitElement {
     this.options = [];
     this.selected = '';
     this.disabled = false;
+    this.label = 'Options';
   }
 
   render() {
@@ -129,6 +138,8 @@ export class SearchableDropdown extends LitElement {
      <svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="chevron-up" class="svg-inline--fa fa-chevron-up fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M240.971 130.524l194.343 194.343c9.373 9.373 9.373 24.569 0 33.941l-22.667 22.667c-9.357 9.357-24.522 9.375-33.901.04L224 227.495 69.255 381.516c-9.379 9.335-24.544 9.317-33.901-.04l-22.667-22.667c-9.373-9.373-9.373-24.569 0-33.941L207.03 130.525c9.372-9.373 24.568-9.373 33.941-.001z"></path></svg>
      
      </div>
+
+     <span class="label">${this.label}</span>
       <input
         type="text"
         
@@ -172,7 +183,7 @@ export class SearchableDropdown extends LitElement {
 
   emmitValue(value) {
 
-    let event = new CustomEvent('selected', {
+    const event = new CustomEvent('selected', {
       detail: value,
       bubbles: true,
       composed: true,
@@ -187,7 +198,7 @@ export class SearchableDropdown extends LitElement {
     this.filter = this.shadowRoot.querySelector('input').value;
     this.options.forEach(option => {
       const index = this.options.indexOf(option);
-      const el = this.shadowRoot.querySelector('.option' + index);
+      const el = this.shadowRoot.querySelector(`.option${  index}`);
 
       if (option.toLowerCase().includes(this.filter.toLowerCase())) {
         el.style.display = '';
@@ -203,7 +214,8 @@ export class SearchableDropdown extends LitElement {
       this.emmitValue(this.selected); }
     else {this.filter = ''; this.selected = ''};
 
-    btn.classList.remove('rotate')
+    btn.classList.remove('rotate');
+    this.filterOptions();
   }
 
   inputFocus() {
