@@ -209,6 +209,8 @@ export class SearchableDropdown extends LitElement {
   checkValue() {
     const btn = this.shadowRoot.querySelector('.input-btn');
 
+    // TODO - this is buggy part.
+
     if (this.options.includes(this.filter) && this.selected.hasChanged) {
       this.selected = this.filter;
       this.emmitValue(this.selected);
@@ -216,6 +218,8 @@ export class SearchableDropdown extends LitElement {
       this.filter = '';
       this.selected = '';
     }
+
+    // end of buggy parts
 
     btn.classList.remove('rotate');
     //
