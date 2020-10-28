@@ -209,7 +209,7 @@ export class SearchableDropdown extends LitElement {
   checkValue() {
     const btn = this.shadowRoot.querySelector('.input-btn');
 
-    if (this.options.includes(this.filter)) {
+    if (this.options.includes(this.filter) && this.selected.hasChanged) {
       this.selected = this.filter;
       this.emmitValue(this.selected);
     } else {
